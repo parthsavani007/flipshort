@@ -44,8 +44,10 @@ app.use(function (req, res, next) {
     next();
   });
   app.use(bodyParser.json());
-  
-  // app.use('/api/products', productRouter);
+  app.get("/", (req, res) => {
+    res.send("Welcome to a basic express App");
+  });
+    // app.use('/api/products', productRouter);
   app.use('/api/users', clientRouter);
   app.use('/api/design', designRouter);
   app.use('/api/stock', stockRouter);
