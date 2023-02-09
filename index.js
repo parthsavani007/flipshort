@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 import http from 'http';
 
 const Razorpay = require("razorpay");
-import config from '../backend/config';
+import config from './config';
 const mongoose = require("mongoose");
 import clientRouter from './routers/clientRouter'
 import designRouter from './routers/designRouter'
