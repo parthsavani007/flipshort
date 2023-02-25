@@ -8,7 +8,7 @@ const mongoose = require("mongoose");
 import clientRouter from './routers/clientRouter'
 import designRouter from './routers/designRouter'
 import stockRouter from './routers/stockRouter'
-import orderRouter from './routers/orderRouter'
+import invoiceRouter from './routers/invoiceRouter'
 const cors = require('cors');
 
 import bodyParser from 'body-parser';
@@ -38,7 +38,6 @@ app.use(function (req, res, next) {
     //  console.log(req.originalUrl);
     res.header("Access-Control-Allow-Origin", "*");
     res.header('Access-Control-Allow-Origin', 'http://localhost:3030');
-    res.header("Access-Control-Allow-Origin", "https://krishna-alpha.vercel.app");
     res.header('Access-Control-Allow-Credentials', 'true');
     res.header("Access-Control-Allow-Methods", "GET", "PUT", "POST", "DELETE", "OPTIONS");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization, x-client-key, x-client-token, x-client-secret");
@@ -52,6 +51,7 @@ app.use(function (req, res, next) {
   app.use('/api/users', clientRouter);
   app.use('/api/design', designRouter);
   app.use('/api/stock', stockRouter);
+  app.use('/api/invoice', invoiceRouter);
 
   // app.use('/api/orders', orderRouter);
   // app.use('/api/uploads', uploadRouter);
