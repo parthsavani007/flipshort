@@ -11,7 +11,7 @@ const router = express.Router();
 
 router.get('/', async (req, res) => {
   try {
-    const designlist = await Invoice.find().populate('clientName')
+    const designlist = await Invoice.find().populate('invoiceTo')
     if (designlist) {
       res.send(
         designlist
@@ -77,14 +77,14 @@ router.get('/', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
   try {
-    const user = await Stock.findById(req.params.id).populate('client').populate('design');
+    const user = await Invoice.findById(req.params.id).populate('invoiceTo');
 
     //console.log(req.params.id+"new ed:"+user )
     if (user) {
       res.send(user);
       return;
     }
-    res.status(401).send({ message: 'Invalid design.' });
+    res.status(401).send({ message: 'Invalid invoice.' });
 
   } catch (error) {
     console.log(error);
@@ -97,15 +97,13 @@ router.post('/createInvoice', async (req, res) => {
     const invoice = new Invoice({
       invoiceNo: req.body.invoiceNo,
       invoiceDate: req.body.invoiceDate,
-      invoiceDiscount: req.body.invoiceDiscount,
-      invoiceStatus: req.body.invoiceStatus,
-
-      gst: req.body.gst,
+      dueDate: req.body.dueDate,
+      discount: req.body.discount,
+      status: req.body.status,
       TotalAmount: req.body.TotalAmount,
-      taxamount: req.body.taxamount,
       invoiceAmount: req.body.invoiceAmount,
-      clientName: req.body.clientName._id,
-      Items: req.body.Items,
+      invoiceTo: req.body.invoiceTo._id,
+      items: req.body.items,
       CreatedAt: Date.now(),
       UpdatedAt: Date.now()
     })
@@ -173,54 +171,38 @@ router.post('/createInvoice', async (req, res) => {
 // );
 
 
-router.put('/updateStock',
+router.put('/updateInvoice',
   async (req, res) => {
-
+console.log(req.body._id);
     try {
-      const stock = await Stock.findById(req.body._id );
-      if (stock) {
+      const invoice = await Invoice.findById(req.body._id );
+      if (invoice) {
 
-          stock.challanNo = req.body.challanNo || stock.challanNo,
-          stock.challanDate = req.body.challanDate || stock.challanDate,
-          stock.stockQuantity = req.body.stockQuantity || stock.stockQuantity,
-          stock.Short = req.body.Short || stock.Short,
-          stock.Remark = req.body.Remark || stock.Remark,
-          stock.clientName = req.body.clientName.clientName || stock.clientName.clientName,
-          stock.clientId = req.body.clientId || stock.clientId,
-          stock.designName = req.body.designName.designName || stock.designName.designName,
-          stock.designId = req.body.designId || stock.designId,
-          stock.client = req.body.clientName._id || stock.clientName._id,
-          stock.design = req.body.designName._id || stock.designName._id,
-          stock.CreatedAt = stock.CreatedAt || Date.now(),
-          stock.UpdatedAt = Date.now()
-        const updatedStock = await stock.save();
-        if (updatedStock) {
+          invoice.invoiceNo = req.body.invoiceNo || invoice.invoiceNo,
+          invoice.invoiceDate = req.body.invoiceDate || invoice.invoiceDate,
+          invoice.status = req.body.status || invoice.status,
+          invoice.items = req.body.items || invoice.items,
+          invoice.dueDate = req.body.dueDate || invoice.dueDate,
+          invoice.invoiceTo = req.body.invoiceTo || invoice.invoiceTo,
+          invoice.discount = req.body.discount || invoice.discount,
+          invoice.invoiceAmount = req.body.invoiceAmount || invoice.invoiceAmount,
+          invoice.TotalAmount = req.body.TotalAmount || invoice.TotalAmount,
+          invoice.CreatedAt = invoice.CreatedAt || Date.now(),
+          invoice.UpdatedAt = Date.now()
+        const updatedInvoice = await invoice.save();
+        if (updatedInvoice) {
           res.send({
-            _id: updatedStock.id,
-            challanNo: updatedStock.challanNo,
-            challanDate: updatedStock.challanDate,
-            stockQuantity: updatedStock.stockQuantity,
-            Short: updatedStock.Short,
-            Remark: updatedStock.Remark,
-            designName: updatedStock.designName,
-            designId: updatedStock.designId,
-            clientId: updatedStock.clientId,
-            clientName: updatedStock.clientName,
-            designRate: updatedStock.designRate,
-            CreatedAt: updatedStock.CreatedAt,
-            client: updatedStock.client,
-            design: updatedStock.design,
-            UpdatedAt: updatedStock.UpdatedAt,
+            updatedInvoice
           });
         } else {
-          console.log(stock);
-          res.status(401).send({ message: 'Invalid stock Data.' });
+          console.log(invoice);
+          res.status(401).send({ message: 'Invalid updatedInvoice Data.' });
         }
         return;
       }
       else {
-        console.log(stock);
-        res.status(401).send({ message: 'Invalid design or client.' });
+        console.log(invoice);
+        res.status(401).send({ message: 'Invalid invoice or client.' });
       }
     } catch (error) {
       res.send({ meg: error.message });
@@ -235,7 +217,7 @@ router.put('/updateStock',
 
 router.delete('/:id',
   async (req, res) => {
-    const design = await Stock.findById(req.params.id);
+    const design = await Invoice.findById(req.params.id);
     if (design) {
 
       const deleteDesign = await design.remove();
