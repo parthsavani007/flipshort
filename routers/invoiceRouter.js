@@ -11,10 +11,21 @@ const router = express.Router();
 
 router.get('/', async (req, res) => {
   try {
-    const designlist = await Invoice.find().populate('invoiceTo')
-    if (designlist) {
+    const invoicelist = await Invoice.find().populate('invoiceTo');
+    const overdue = invoicelist.filter((item) => new Date(item.dueDate) < new Date() && item.status == 'unpaid')
+    overdue.map(async (option) => {
+      option.status = 'overdue';
+      try {
+        const newStock = await option.save();
+      } catch (error) {
+        console.log(error)
+      }
+    });
+    const finalList = await Invoice.find().populate('invoiceTo');
+
+    if (finalList) {
       res.send(
-        designlist
+        finalList
       );
       return;
     }
@@ -91,7 +102,6 @@ router.get('/:id', async (req, res) => {
   }
 });
 router.post('/createInvoice', async (req, res) => {
-  console.log(req.body);
   try {
 
     const invoice = new Invoice({
@@ -107,7 +117,7 @@ router.post('/createInvoice', async (req, res) => {
       CreatedAt: Date.now(),
       UpdatedAt: Date.now()
     })
-    const findInvoice = await Invoice.findOne({ 'challanNo': req.body.challanNo });
+    const findInvoice = await Invoice.findOne({ 'invoiceNo': req.body.invoiceNo });
 
     if (findInvoice) {
       res.status(401).send({ message: `Invoice is already exist & ${findInvoice} ` })
@@ -173,29 +183,27 @@ router.post('/createInvoice', async (req, res) => {
 
 router.put('/updateInvoice',
   async (req, res) => {
-console.log(req.body._id);
     try {
-      const invoice = await Invoice.findById(req.body._id );
+      const invoice = await Invoice.findById(req.body._id);
       if (invoice) {
 
-          invoice.invoiceNo = req.body.invoiceNo || invoice.invoiceNo,
-          invoice.invoiceDate = req.body.invoiceDate || invoice.invoiceDate,
-          invoice.status = req.body.status || invoice.status,
-          invoice.items = req.body.items || invoice.items,
-          invoice.dueDate = req.body.dueDate || invoice.dueDate,
-          invoice.invoiceTo = req.body.invoiceTo || invoice.invoiceTo,
-          invoice.discount = req.body.discount || invoice.discount,
-          invoice.invoiceAmount = req.body.invoiceAmount || invoice.invoiceAmount,
-          invoice.TotalAmount = req.body.TotalAmount || invoice.TotalAmount,
-          invoice.CreatedAt = invoice.CreatedAt || Date.now(),
-          invoice.UpdatedAt = Date.now()
+        invoice.invoiceNo = req.body.invoiceNo || invoice.invoiceNo;
+        invoice.invoiceDate = req.body.invoiceDate || invoice.invoiceDate;
+        invoice.status = req.body.status || invoice.status;
+        invoice.items = req.body.items || invoice.items;
+        invoice.dueDate = req.body.dueDate || invoice.dueDate;
+        invoice.invoiceTo = req.body.invoiceTo || invoice.invoiceTo;
+        invoice.discount = req.body.discount;
+        invoice.invoiceAmount = Number(req.body.invoiceAmount) || Number(invoice.invoiceAmount);
+        invoice.TotalAmount = Number(req.body.TotalAmount) || Number(invoice.TotalAmount);
+        invoice.CreatedAt = invoice.CreatedAt || Date.now(),
+          invoice.UpdatedAt = Date.now();
         const updatedInvoice = await invoice.save();
         if (updatedInvoice) {
           res.send({
             updatedInvoice
           });
         } else {
-          console.log(invoice);
           res.status(401).send({ message: 'Invalid updatedInvoice Data.' });
         }
         return;
@@ -221,7 +229,7 @@ router.delete('/:id',
     if (design) {
 
       const deleteDesign = await design.remove();
-      res.send({ message: 'Design Deleted', user: deleteDesign });
+      res.send({ message: 'Design Invoice', user: deleteDesign });
     } else {
       res.status(404).send({ message: 'Design Not Found' });
     }

@@ -2,7 +2,6 @@ import express from 'express';
 import dotenv from 'dotenv';
 import http from 'http';
 
-const Razorpay = require("razorpay");
 import config from './config';
 const mongoose = require("mongoose");
 import clientRouter from './routers/clientRouter'
@@ -26,18 +25,15 @@ const client = mongoose.connect(mongodbUrl,{ useNewUrlParser: true, useUnifiedTo
     console.error(`Error connecting to the database. \n${err}`);
  });
 
-const razorpay = new Razorpay({
-  key_id: config.R_KeyId,
-  key_secret: config.RAZOR_PAY_KEY_SECRET,
-});
+
  const app = express();
  app.use(cors());
 
 app.use(function (req, res, next) {
-  
     //  console.log(req.originalUrl);
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Origin", "https://krishna-alpha.vercel.app");
+    res.header("Access-Control-Allow-Origin", "https://localhost:3030");
 
     res.header('Access-Control-Allow-Credentials', 'true');
     res.header("Access-Control-Allow-Methods", "GET", "PUT", "POST", "DELETE", "OPTIONS");
@@ -62,3 +58,4 @@ app.listen(5000,()=>{
     console.log("server started http://localhost:5000")
   
   });
+  
