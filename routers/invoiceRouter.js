@@ -5,6 +5,7 @@ import Invoice from '../models/invoiceModel';
 import bcrypt from 'bcrypt';
 
 import { getToken, isAuth, isAdmin } from '../util';
+import Stock from '../models/stockModel';
 
 const router = express.Router();
 
@@ -22,7 +23,10 @@ router.get('/', async (req, res) => {
       }
     });
     const finalList = await Invoice.find().populate('invoiceTo');
-
+    const data = finalList.map((option) => 
+      option.items.map(({ challanNo }) => challanNo)
+    )
+    
     if (finalList) {
       res.send(
         finalList
@@ -124,8 +128,24 @@ router.post('/createInvoice', async (req, res) => {
     }
     else {
       const newStock = await invoice.save();
-
+      const data = newStock.items.map(async (option) => {
+        const challan = await Stock.findOneAndUpdate({"challanNo": option.challanNo},{
+          $set: {
+               "isInvoiced": true
+           }
+        },
+        { new: true });
+        console.log(challan);
+      })
+    //   const data = newStock.map((option) => 
+    //   option.items.map(({ challanNo }) => challanNo)
+    // )
+      
+      //   const challan = await Stock.find({'challanNo': option.challanNo})
+      //   console.log(challan);
+      // })
       if (newStock) {
+        console.log(newStock);
         res.send({
           newStock
         });
@@ -199,6 +219,15 @@ router.put('/updateInvoice',
         invoice.CreatedAt = invoice.CreatedAt || Date.now(),
           invoice.UpdatedAt = Date.now();
         const updatedInvoice = await invoice.save();
+        const data = updatedInvoice.items.map(async (option) => {
+          const challan = await Stock.findOneAndUpdate({"challanNo": option.challanNo},{
+            $set: {
+                 "isInvoiced": true
+             }
+          },
+          { new: true });
+          console.log(challan);
+        });
         if (updatedInvoice) {
           res.send({
             updatedInvoice
@@ -227,8 +256,17 @@ router.delete('/:id',
   async (req, res) => {
     const design = await Invoice.findById(req.params.id);
     if (design) {
-
+      const data = design.items.map(async (option) => {
+        const challan = await Stock.findOneAndUpdate({"challanNo": option.challanNo},{
+          $set: {
+               "isInvoiced": false
+           }
+        },
+        { new: true });
+        console.log(challan);
+      });
       const deleteDesign = await design.remove();
+      
       res.send({ message: 'Design Invoice', user: deleteDesign });
     } else {
       res.status(404).send({ message: 'Design Not Found' });

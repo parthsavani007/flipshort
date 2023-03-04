@@ -13,6 +13,7 @@ const Stock = new mongoose.Schema({
     designId: { type: String, required:true},
     CreatedAt: { type: Date,required:true},
     UpdatedAt: { type: Date,required:true},
+    isInvoiced: { type: Boolean, default: false},
     client: { type: mongoose.Schema.Types.ObjectID, ref: 'Client' },
     design: { type: mongoose.Schema.Types.ObjectID, ref: 'Design' },
 });
