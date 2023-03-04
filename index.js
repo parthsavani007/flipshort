@@ -32,6 +32,7 @@ const client = mongoose.connect(mongodbUrl,{ useNewUrlParser: true, useUnifiedTo
 app.use(function (req, res, next) {
     //  console.log(req.originalUrl);
     res.header("Access-Control-Allow-Origin", "*");
+    res.header('Access-Control-Allow-Origin', 'http://localhost:3030');
     res.header("Access-Control-Allow-Origin", "https://krishna-alpha.vercel.app");
     res.header('Access-Control-Allow-Credentials', 'true');
     res.header("Access-Control-Allow-Methods", "GET", "PUT", "POST", "DELETE", "OPTIONS");
