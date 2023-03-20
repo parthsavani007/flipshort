@@ -1,8 +1,8 @@
 import mongoose from 'mongoose';
 
 const designSchema = new mongoose.Schema({
-    designName:{ type: String, required:true},
-    designId:{ type: String, required:true},
+    designName:{ type: String},
+    designId:{ type: String},
     designRate:{ type: String, required:true},
     CreatedAt: { type: Date },
     UpdatedAt: { type: Date },

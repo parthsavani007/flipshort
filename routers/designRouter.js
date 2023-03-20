@@ -104,7 +104,7 @@ router.post('/createDesign', async (req, res) => {
     const findDesign = await Design.findOne({ 'designName': req.body.designName });
     
     if (findDesign) {
-      res.status(401).send({ message: `Design Name is already exist & ${findDesign} ` })
+      res.status(401).send({ message: `designId or Name is already exist` })
     }
     else {
       const newDesign = await design.save();
