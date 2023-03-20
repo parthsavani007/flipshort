@@ -77,10 +77,7 @@ router.get('/', async (req, res) => {
 
 router.get('/:id' , async (req, res) => {
   try {
-    const user = await Client.findOne({
-            clientId: req.params.id,
-           
-          });
+    const user = await Client.findById(req.params.id);
     //console.log(req.params.id+"new ed:"+user )
     if (user ) {
       res.send(user);
@@ -104,10 +101,10 @@ router.post('/createClient', async (req, res) => {
       CreatedAt: Date.now(),
       UpdatedAt: Date.now()
     })
-    const finduser = await Client.findOne({ 'clientName': req.body.clientName });
+    const finduser = await Client.findOne({ 'clientId': req.body.clientId , 'gst': req.body.gst});
     
     if (finduser) {
-      res.status(401).send({ message: `clientName is already exist & ${finduser} ` })
+      res.status(401).send({ message: `clientId or GST is already exist` })
     }
     else {
       const newClient = await client.save();
@@ -225,7 +222,7 @@ router.delete('/:id',
     if (user) {
       
       const deleteUser = await user.remove();
-      res.send({ message: 'User Deleted', user: deleteUser });
+      res.send(deleteUser);
     } else {
       res.status(404).send({ message: 'User Not Found' });
     }

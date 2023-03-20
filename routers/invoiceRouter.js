@@ -267,7 +267,7 @@ router.delete('/:id',
       });
       const deleteDesign = await design.remove();
       
-      res.send({ message: 'Design Invoice', user: deleteDesign });
+      res.send({deleteDesign });
     } else {
       res.status(404).send({ message: 'Design Not Found' });
     }
