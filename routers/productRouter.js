@@ -1,6 +1,6 @@
 import express from 'express';
 import Product from '../models/productModel';
-import User from '../models/clientModel';
+
 
 import { isAdmin, isAuth, isSellerOrAdmin } from '../util.js';
 import data from '../data';
@@ -53,7 +53,7 @@ router.get('/', async (req, res) => {
   const page = Number(req.query.pageNumber) || 1;
   const products = await Product.find();
   
-  res.send({ products, page, pages: Math.ceil(2 / pageSize) });
+  res.send( products );
 }
 );
 // router.get('/', async (req, res) => {
@@ -205,30 +205,15 @@ router.delete('/:id',isAuth,async (req, res) => {
 // // });
 
 router.post(
-  '/',
-  isAuth,async (req, res) => {
+  '/',async (req, res) => {
     const product = new Product({
-      name : 'sample name ' + Date.now(),
-      price : 10,
-      priceSale : 11,
-      sku : 'B00000',
-      cover : 'https://minimal-assets-api-dev.vercel.app/assets/images/products/product_2.jpg',
-      images :['https://minimal-assets-api-dev.vercel.app/assets/images/products/product_2.jpg'],
-      code : 'V000000',
-      tag : ['Body'],
-      status : 'sale',
-      totalRating:0,
-  totalReview:0,
-      inventoryType: 'Low stock	',     
-      description : 'req.body.description',
-      gender : 'Women',
-      sold:0,
-      sizes: ['7' ,'8' ,'9' ,'10', '11'],
-      category : 'req.body.category',
-      colors : ['#00AB55'],
-      available : 10,
-      createdAt: Date.now(),
-    });
+          name: req.body.name,
+          price: req.body.price,
+          image: req.body.image,
+          priceSale: req.body.priceSale,
+          description: req.body.description,
+         });
+        const newProduct = await product.save();
     const createdProduct = await product.save();
     res.send({ message: 'Product Created', product: createdProduct });
   }

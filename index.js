@@ -4,10 +4,8 @@ import http from 'http';
 
 import config from './config';
 const mongoose = require("mongoose");
-import clientRouter from './routers/clientRouter'
-import designRouter from './routers/designRouter'
-import stockRouter from './routers/stockRouter'
-import invoiceRouter from './routers/invoiceRouter'
+
+import productRouter from './routers/productRouter'
 const cors = require('cors');
 
 import bodyParser from 'body-parser';
@@ -44,17 +42,13 @@ app.use(function (req, res, next) {
     res.send("Welcome to a basic express App");
   });
     // app.use('/api/products', productRouter);
-  app.use('/api/users', clientRouter);
-  app.use('/api/design', designRouter);
-  app.use('/api/stock', stockRouter);
-  app.use('/api/invoice', invoiceRouter);
-
-  // app.use('/api/orders', orderRouter);
-  // app.use('/api/uploads', uploadRouter);
- 
-app.listen(5000,()=>{
   
-    console.log("server started http://localhost:5000")
+  app.use('/api/product', productRouter);
+  
+ 
+app.listen(5500,()=>{
+  
+    console.log("server started http://localhost:5500")
   
   });
   
