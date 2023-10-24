@@ -7,47 +7,9 @@ import data from '../data';
 
 const router = express.Router();
 
-router.get('/seed',async (req, res) => {
-  // await Product.remove({});
-  try {
-    const createdProducts = await Product.insertMany(data.products);
-  console.log(createdProducts);
-  if (createdProducts) {
-  res
-      .status(500)
-      .send({ message: {createdProducts }});
-  }
-  else{
-    res
-      .status(500)
-      .send({ message: 'No seller found. first run /api/users/seed' });
-  }
-  } catch (error) {
-    console.log(error)
-    res
-      .status(500)
-      .send({ message: {error}});
-  }
-//  const createdProducts = await Product.insertMany(data.products);
- // res.send({ createdProducts });
-  // const seller = await User.findOne({ isSeller: true });
-  // if (seller) {
-  //   const products = data.products.map((product) => ({
-  //     ...product,
-  //     seller: seller._id,
-  //   }));
-  //   const createdProducts = await Product.insertMany(products);
-  //   res.send({ createdProducts });
-  // } 
-  // else {
-    res
-      .status(500)
-      .send({ message: 'No seller found. first run /api/users/seed' });
-  //}
-}
-);
 
-router.get('/', async (req, res) => {
+
+router.get('/get', async (req, res) => {
   
   const pageSize = 6;
   const page = Number(req.query.pageNumber) || 1;
