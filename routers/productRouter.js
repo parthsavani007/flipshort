@@ -7,6 +7,12 @@ import data from '../data';
 const router = express.Router();
 
 
+router.get('/test', async (req, res) => {
+  
+  
+  res.send( "test" );
+}
+);
 
 router.get('/get', async (req, res) => {
   
