@@ -15,7 +15,9 @@ const mongodbUrl = config.MONGODB_URL;
 const client = mongoose.connect(mongodbUrl,{ useNewUrlParser: true, useUnifiedTopology: true })
 .then( () => {
     console.log('Connected to database ');
-   //loadData();
+    
+    
+    //loadData();
    // var products = Product.find({});
   //  console.log(products);
 })
